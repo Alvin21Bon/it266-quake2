@@ -1,8 +1,16 @@
 #!/bin/bash
 
-#   1)  COMPLETELY WIPE THE TARGET MOD DIRECTORY
-#   2)  COPY THE BINARIES INTO THE TARGET GAME AND MOD FOLDER
-#   3)  COPY THE MOD FILES INTO THE TAGRET MOD
+# This certificate check is used so that no one accidentily runs this script when building this repo from source.
+# This script was made for my use only
+
+apply_mod_certificate=$(cat ../personal/apply-mod-certificate 2>/dev/null | head -n 1)
+
+if [ "$apply_mod_certificate" != "alvin21bon" ]
+then
+    rm -rf release/my-mod #just in case :/
+    exit 0
+fi
+
 
 mod_binaries_dir="release"
 mod_files_dir="mod-files"
@@ -38,6 +46,7 @@ mkdir $target_mod_dir
 #   2)  COPY THE BINARIES INTO THE TARGET GAME AND MOD FOLDER
 #********************************************************************************
 echo "Copying the binaries..."
+rm -rf release/my-mod #done so successive make calls do not create duplicate my-mod folders
 mv -f release/baseq2 release/my-mod #rename baseq2 to make moving binaries easier
 cp -rf "$mod_binaries_dir"/* "$target_mod_dir"/..
 
@@ -46,7 +55,8 @@ cp -rf "$mod_binaries_dir"/* "$target_mod_dir"/..
 #   3)  COPY THE MOD FILES INTO THE TAGRET MOD
 #********************************************************************************
 #TODO: INSTALL PAKCOMPRESS INTO THE WINDOWS BUILD ENV
-echo "Compressing mod files and transferring them into the mod"
+echo "Compressing mod files and transferring them into the mod..."
+touch "$mod_files_dir"/dummy
 case $OSTYPE in
     [Ll]inux)
         pakcompress $mod_files_dir "$target_mod_dir"/MOD_FILES.pak
@@ -60,3 +70,8 @@ case $OSTYPE in
         exit 1
         ;;
 esac
+
+
+echo "=================================================================="
+echo "MOD BUILD COMPLETE"
+echo "=================================================================="
