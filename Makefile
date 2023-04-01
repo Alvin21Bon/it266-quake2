@@ -383,6 +383,7 @@ endif
 
 # Builds everything
 all: config client server game ref_gl1 ref_gl3 ref_gles3 ref_soft
+	./apply-mod.sh $(YQ2_OSTYPE)
 
 # ----------
 
