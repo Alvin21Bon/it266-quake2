@@ -4,3 +4,5 @@
 *.user
 *.d
 /mod-files/dummy
+.cache/
+compile_commands.json
